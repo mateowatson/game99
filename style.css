@@ -157,3 +157,90 @@ body {
 /* ----------------------------------------------- */
 /* --------------- END TIC TAC TOE --------------- */
 /* ----------------------------------------------- */
+
+/* --------------------------------------- */
+/* --------------- HANGMAN --------------- */
+/* --------------------------------------- */
+.hangman {
+	background-color: var(--teal);
+	min-height: 100vh;
+}
+
+.hangman__heading1 {
+	text-align: center;
+	padding: 100px 25px 25px 25px;
+	color: var(--purple);
+}
+
+.hangman__board {
+	position: relative;
+	max-width: 600px;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 25px;
+	border-radius: 5px;
+}
+
+.hangman__btn {
+	display: block;
+	width: 100%;
+	background-color: var(--purple);
+	color: #fff;
+}
+
+.hangman__btn:hover {
+	background-color: var(--pink);
+}
+
+.hangman__input-phrase {
+	width: 100%;
+	margin-bottom: 22px;
+	text-align: center;
+	font-size: 3em;
+}
+
+.hangman__guess {
+	margin-bottom: 22px;
+	width: 100%;
+	border: 0;
+	text-align: center;
+	font-size: 3em;
+}
+
+.hangman__phrase {
+	text-align: center;
+	font-size: 3em;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.hangman__char {
+	position: relative;
+	display: block;
+	width: 10%;
+	margin-right: 1%;
+}
+
+.hangman__char:after {
+	content: " ";
+	position: relative;
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-bottom: 2px solid var(--purple);
+	width: 100%;
+	height: 100%;
+}
+
+.hangman__letter:after {
+	background-color: #fff;
+}
+
+.hangman__char_revealed:after {
+	background-color: transparent;
+}
+/* ------------------------------------------- */
+/* --------------- END HANGMAN --------------- */
+/* ------------------------------------------- */
