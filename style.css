@@ -202,36 +202,47 @@ body {
 .hangman__guess {
 	margin-bottom: 22px;
 	width: 100%;
-	border: 0;
+	/*border: 0;*/
 	text-align: center;
 	font-size: 3em;
 }
 
 .hangman__phrase {
-	text-align: center;
 	font-size: 3em;
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
+	margin-bottom: 50px;
+}
+
+.hangman__word {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
 }
 
 .hangman__char {
-	position: relative;
 	display: block;
-	width: 10%;
-	margin-right: 1%;
+	position: relative;
+	text-align: center;
+	width: 40px;
+	margin-right: 5px;
 }
 
 .hangman__char:after {
 	content: " ";
-	position: relative;
 	display: block;
 	position: absolute;
 	top: 0;
 	left: 0;
-	border-bottom: 2px solid var(--purple);
 	width: 100%;
 	height: 100%;
+	border-bottom: 2px solid var(--purple);
+}
+
+.hangman__space:after {
+	border-bottom: none;
 }
 
 .hangman__letter:after {
@@ -241,6 +252,170 @@ body {
 .hangman__char_revealed:after {
 	background-color: transparent;
 }
+
+
+.hangman__noose {
+	position: relative;
+	display: block;
+	width: 80%;
+	height: 300px;
+	margin: 0 auto 50px auto;
+}
+
+.hangman__top-bar {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	top: 0;
+	right: 0;
+	width: 60%;
+	height: 10px;
+}
+.hangman__side-bar {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 10px;
+}
+.hangman__bottom-bar {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	bottom: 20px;
+	right: 0;
+	width: 100%;
+	height: 10px;
+}
+.hangman__bottom-front-bar {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	left: 0;
+	bottom: 0;
+	height: 20px;
+	width: 10px;
+}
+.hangman__rope {
+	display: block;
+	position: absolute;
+	background-color: var(--yellow);
+	top: 0;
+	right: 50%;
+	width: 10px;
+	height: 60px;
+}
+.hangman__neck-rope {
+	display: block;
+	position: absolute;
+	background-color: transparent;
+	right: 50%;
+	top: 58px;
+	width: 50px;
+	height: 50px;
+	margin-right: -20px;
+	border-radius: 100px;
+	border: 10px solid var(--yellow);
+}
+.hangman__head {
+	display: block;
+	position: absolute;
+	background-color: transparent;
+	right: 50%;
+	top: 52px;
+	width: 40px;
+	height: 50px;
+	transform: rotate(-15deg);
+	margin-right: -15px;
+	border-radius: 100px;
+	border: 8px solid #000;
+}
+.hangman__body {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	right: 50%;
+	top: 100px;
+	height: 50px;
+	width: 8px;
+	transform: rotate(10deg);
+}
+.hangman__left-leg {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	right: calc(50% + 25px);
+	top: 140px;
+	width: 8px;
+	height: 60px;
+	transform: rotate(45deg);
+}
+.hangman__right-leg {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	right: calc(50% - 10px);
+	top: 145px;
+	width: 8px;
+	height: 60px;
+	transform: rotate(-25deg);
+}
+.hangman__left-arm {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	right: calc(50% + 25px);
+	top: 90px;
+	width: 8px;
+	height: 50px;
+	transform: rotate(90deg);
+}
+.hangman__right-arm {
+	display: block;
+	position: absolute;
+	background-color: #000;
+	right: calc(50% - 25px);
+	top: 88px;
+	width: 8px;
+	height: 50px;
+	transform: rotate(-100deg);
+}
+
+.hangman__letters-guessed-wrapper {
+	margin-top: 50px;
+}
+
+.hangman__letters-guessed-intro {
+	font-size: 1em;
+}
+
+.hangman__letters-guessed {
+	font-size: 1.5em;
+}
+
+.hangman__letter-guessed:last-child .hangman__letter-spacer {
+	display: none;
+}
+
+.hangman__end-dialog-message {
+	font-size: 5em;
+	text-align: center;
+	color: var(--purple);
+}
+
+.hangman__btn {
+	background-color: var(--teal);
+	width: 100%;
+}
+
+.hangman__btn-primary {
+	background-color: var(--purple);
+	width: 100%;
+	margin-bottom: 1em;
+}
+
 /* ------------------------------------------- */
 /* --------------- END HANGMAN --------------- */
 /* ------------------------------------------- */
