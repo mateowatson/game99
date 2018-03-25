@@ -239,8 +239,10 @@ var Hangman = {
 	template: `
 		<div class="hangman">
 			<h1 class="hangman__heading1 game99__game-title">Hangman</h1>
-
-			<hm-board></hm-board>
+			
+			<div class="hangman__board-wrapper">
+				<hm-board></hm-board>
+			</div>
 		</div>
 	`,
 
