@@ -419,7 +419,215 @@ body {
 	width: 100%;
 	margin-bottom: 1em;
 }
-
 /* ------------------------------------------- */
 /* --------------- END HANGMAN --------------- */
+/* ------------------------------------------- */
+
+
+/* --------------------------------------- */
+/* --------------- MANCALA --------------- */
+/* --------------------------------------- */
+.mancala {
+	--man-brown: #6b4412;
+	--man-darkbrown: #4c3211;
+	--man-green: #656b12;
+	--man-dark-green: #51560b;
+	--man-yellow: #ead12e;
+}
+
+.mancala__holes {
+	/*display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;*/
+	position: relative;
+	display: block;
+	margin-left: 100px;
+	width: 600px;
+	height: 200px;
+}
+
+.mancala__hole {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	float: right;
+	width: 100px;
+	height: 100px;
+	background-color: var(--man-brown);
+}
+
+.mancala__hole:nth-child(8),
+.mancala__hole:nth-child(9),
+.mancala__hole:nth-child(10),
+.mancala__hole:nth-child(11),
+.mancala__hole:nth-child(12),
+.mancala__hole:nth-child(13) {
+	float: left;
+}
+
+.mancala__hole_store {
+	position: absolute;
+	top: 0;
+	left: -100px;
+	background-color: var(--man-green);
+	height: 200px;
+}
+
+.mancala__hole_store:nth-child(14) {
+	left: 600px;
+}
+
+.mancala__stones {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 65px;
+	height: 80px;
+	border-radius: 25%;
+	background-color: var(--man-darkbrown);
+
+	cursor: pointer;
+}
+
+.mancala__hole_store .mancala__stones {
+	background-color: transparent;
+	width: 100%;
+	height: 100%;
+}
+
+.mancala__stone {
+	display: block;
+	top: 5px;
+	left: 5px;
+	width: 5px;
+	height: 15px;
+	margin-right: 2px;
+	border-radius: 100%;
+	background-color: var(--man-yellow);
+	transform: rotate(20deg);
+}
+
+.mancala__stone:nth-child(odd) {
+	transform: rotate(15deg);
+}
+
+.mancala__stone:nth-child(4n + 1) {
+	transform: rotate(-10deg);
+}
+
+.mancala__grass {
+	display: flex;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+@keyframes bladegeneral {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(-10deg);
+	}
+}
+
+.mancala__grass-blade {
+	display: flex;
+	width: 3px;
+	height: 10px;
+	margin-right: 0;
+	border-radius: 0 100% 0 100%;
+	background-color: var(--man-dark-green);
+	transform-origin: bottom right;
+	margin-bottom: -3px;
+
+	transform: rotate(0deg);
+
+	animation-name: bladegeneral;
+	animation-duration: 1.3s;
+	animation-timing-function: ease;
+	animation-delay: 0s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-fill-mode: none;
+	animation-play-state: running;
+}
+
+@keyframes bladethree {
+	0% {
+		transform: rotate(35deg);
+	}
+	100% {
+		transform: rotate(5deg);
+	}
+}
+
+.mancala__grass-blade:nth-child(3n + 1) {
+	transform: rotate(35deg);
+	margin-top: -2px;
+
+	animation-name: bladethree;
+	animation-duration: 1.3s;
+	animation-timing-function: ease;
+	animation-delay: 0s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-fill-mode: none;
+	animation-play-state: running;
+}
+
+@keyframes bladefour {
+	0% {
+		transform: rotate(25deg);
+	}
+	100% {
+		transform: rotate(10deg);
+	}
+}
+
+.mancala__grass-blade:nth-child(4n + 1) {
+	transform: rotate(25deg);
+	margin-top: -1px;
+
+	animation-name: bladefour;
+	animation-duration: 1.3s;
+	animation-timing-function: ease;
+	animation-delay: 0s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-fill-mode: none;
+	animation-play-state: running;
+}
+
+@keyframes bladefive {
+	0% {
+		transform: rotate(10deg);
+	}
+	100% {
+		transform: rotate(-15deg);
+	}
+}
+
+.mancala__grass-blade:nth-child(5n + 1) {
+	transform: rotate(10deg);
+	margin-bottom: -3px;
+
+	animation-name: bladefive;
+	animation-duration: 1.3s;
+	animation-timing-function: ease;
+	animation-delay: 0s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+	animation-fill-mode: none;
+	animation-play-state: running;
+}
+/* ------------------------------------------- */
+/* --------------- END MANCALA --------------- */
 /* ------------------------------------------- */

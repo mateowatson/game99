@@ -24,7 +24,8 @@ var Home = {
 			tagline: 'Handmade Web Games For Your Enjoyment',
 			games: [
 				{ title: 'Hangman', view: 'hangman'},
-				{ title: 'Tic Tac Toe', view: 'tictactoe' }
+				{ title: 'Tic Tac Toe', view: 'tictactoe' },
+				{ title: 'Mancala', view: 'mancala' }
 			],
 			gameSelected: ''
 		}
@@ -46,13 +47,14 @@ var app = new Vue({
 	el: '#app',
 
 	data: {
-		currentView: 'home'
+		currentView: 'mancala'
 	},
 
 	components: {
 		home: Home,
 		hangman: Hangman,
-		tictactoe: TicTacToe
+		tictactoe: TicTacToe,
+		mancala: Mancala
 	},
 
 	methods: {
