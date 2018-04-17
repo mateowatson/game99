@@ -2,6 +2,8 @@ var manBoard = {
 	template: `
 		<div class="mancala__board">
 			<h2 class="sr-only">Board</h2>
+			<p>Winner: {{ winner }}</p>
+			<p>Turn: {{ turn }}</p>
 
 			<div class="mancala__holes">
 				<div class="mancala__hole" v-for="(hole, index) in holes" :class="hole.cssClasses">
@@ -18,6 +20,7 @@ var manBoard = {
 	data: function() {
 		return {
 			holes: [],
+			winner: '',
 			grassBlades: 859,
 			turn: 'Player 1',
 			players: {
@@ -61,7 +64,13 @@ var manBoard = {
 		},
 
 		playTurn: function(hole, index) {
-			// var self = this;
+			if (this.turn === 'Player 1' && index <= 5) {
+				return;
+			}
+
+			if (this.turn === 'Player 2' && index >= 7) {
+				return;
+			}
 
 			if (hole.number !== 7 && hole.number !== 14) {
 				var stonesCounter = hole.stones;
@@ -91,16 +100,25 @@ var manBoard = {
 							this.checkOpposingHoleCondition(holeEl);
 						}
 
-
 						holeCounter++;
+
+						if (i === stonesCounter - 1) {
+							if (this.turn === 'Player 1' && holeEl.number !== 14) {
+								this.turn = 'Player 2';
+							} else if (this.turn === 'Player 2' && holeEl.number !== 7) {
+								this.turn = 'Player 1';
+							}
+						}
+						
 
 					} else {
 						holeCounter++;
 						i--;
 					}
-					// console.log(holeEl.number, stonesCounter, i);
 				}
 			}
+
+			this.checkWin();
 		},
 
 		makeOpposingCapture: function(holeElement, oppositeHoleIndex) {
@@ -118,10 +136,53 @@ var manBoard = {
 		checkOpposingHoleCondition: function(holeElement) {
 			for(var i = 0; i < this.opposingHolePairs.length; i++) {
 				var holeElIndex = holeElement.number - 1;
-				console.log(holeElIndex, this.opposingHolePairs[i][holeElIndex]);
+				
 				if (this.opposingHolePairs[i][holeElIndex] >= 0) {
 					this.makeOpposingCapture(holeElement, this.opposingHolePairs[i][holeElIndex]);
 				}
+			}
+		},
+
+		checkWin: function() {
+			var player1out = true;
+			var player2out = true;
+			for (var i = 7; i < 13; i++) {
+				if (this.holes[i].stones > 0) {
+					player1out = false;
+				}
+			}
+			for (var i = 0; i < 6; i++) {
+				if (this.holes[i].stones > 0) {
+					player2out = false;
+				}
+			}
+
+			if (player1out) {
+				for (var i = 0; i < 6; i++) {
+					this.holes[6].stones += this.holes[i].stones
+					this.holes[i].stones = 0;
+				}
+
+				this.determineWinner();
+			}
+
+			if (player2out) {
+				for (var i = 7; i < 13; i++) {
+					this.holes[13].stones += this.holes[i].stones
+					this.holes[i].stones = 0;
+				}
+
+				this.determineWinner();
+			}
+		},
+
+		determineWinner: function() {
+			if (this.holes[6].stones > this.holes[13].stones) {
+				this.winner = 'Player 2';
+			} else if (this.holes[13].stones > this.holes[6].stones) {
+				this.winner = 'Player 1';
+			} else {
+				this.winner = 'Tie';
 			}
 		}
 	},
@@ -145,40 +206,4 @@ var Mancala = {
 	components: {
 		manBoard: manBoard
 	}
-}
-
-var mgrass = `
-	<div class="mancala__grass" v-show="hole.type === 'store'">
-		<div class="mancala__grass-blade" v-for="blade in grassBlades"></div>
-	</div>
-`;
-
-var oldmethod = function() {
-	stonesArray.forEach(function(stone, stoneInd) {
-					self.holes.forEach(function(holeEl, holeInd) {
-						if ((index + (stoneInd + 1)) < 13) {
-							console.log('t: ', index + (stoneInd + 1));
-							if (holeInd === index + (stoneInd + 1)) {
-								if (
-									(holeEl.type === 'pit') ||
-									(holeEl.number === 7 && self.turn === 'Player 1') ||
-									(holeEl.number === 14 && self.turn === 'Player 2')
-								) {
-									holeEl.stones += 1;
-								}
-							}
-						} else {
-							console.log(stoneInd - (stoneInd - 1));
-							if (holeInd === stoneInd - (stoneInd - 1)) {
-								if (
-									(holeEl.type === 'pit') ||
-									(holeEl.number === 7 && self.turn === 'Player 1') ||
-									(holeEl.number === 14 && self.turn === 'Player 2')
-								) {
-									holeEl.stones += 1;
-								}
-							}
-						}
-					});
-				});
 }
