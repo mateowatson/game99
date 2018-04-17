@@ -47,7 +47,7 @@ var app = new Vue({
 	el: '#app',
 
 	data: {
-		currentView: 'home'
+		currentView: 'mancala'
 	},
 
 	components: {
@@ -60,15 +60,43 @@ var app = new Vue({
 	methods: {
 		startGame: function(game) {
 			this.currentView = game.view;
+			window.location.hash = '#' + game.view;
 		},
 
 		goHome: function() {
 			this.currentView = 'home';
+		},
+
+		getCurrentViewFromUrl: function() {
+			console.log(window.location.hash);
+			windowHash = window.location.hash;
+
+			switch (windowHash) {
+				case '#tictactoe':
+					this.currentView = 'tictactoe';
+					break;
+				case '#hangman':
+					this.currentView = 'hangman';
+					break;
+				case '#mancala':
+					this.currentView = 'mancala';
+					break;
+				default:
+					this.currentView = 'home';
+			}
 		}
 	},
 
 	created: function () {
 		eventHub.$on('start-game', this.startGame);
 		eventHub.$on('go-home', this.goHome);
+
+		this.getCurrentViewFromUrl();
 	},
 });
+
+window.onhashchange = function() {
+	if (!window.location.hash) {
+		window.location = window.location;
+	}
+}
