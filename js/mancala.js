@@ -2,17 +2,47 @@ var manBoard = {
 	template: `
 		<div class="mancala__board">
 			<h2 class="sr-only">Board</h2>
-			<p>Winner: {{ winner }}</p>
-			<p>Turn: {{ turn }}</p>
+			
 
-			<div class="mancala__holes">
-				<div class="mancala__hole" v-for="(hole, index) in holes" :class="hole.cssClasses">
-					
-					<div class="mancala__stones" @click="playTurn(hole, index)">
-						<p style="color: white;">{{ index }}</p>
-						<div class="mancala__stone" v-for="stone in hole.stones"></div>
+			<div class="mancala__turn">
+				<p>Turn: {{ turn }}</p>
+			</div>
+			
+			<div class="mancala__holes-wrapper">
+				<div class="mancala__holes">
+					<div class="mancala__hole" v-for="(hole, index) in holes" :class="hole.cssClasses">
+						
+						<div class="mancala__stones" @click="playTurn(hole, index)">
+							<div class="mancala__stone" v-for="stone in hole.stones"></div>
+							<div class="mancala__stones-count">{{ hole.stones }}</div>
+						</div>
 					</div>
 				</div>
+			</div>
+			
+			<div class="mancala__winner-notification" v-show="winner">
+				<h3 class="mancala__winner-heading">{{ winnerHeading }}</h3>
+
+				<div class="mancala__winner-options">
+					<button class="btn mancala__btn mancala__btn_primary" @click="reset">Play Again!</button>
+					<button class="btn mancala__btn" @click="goHome">Go Back to the Home Screen</button>
+				</div>
+			</div>
+
+			<div class="mancala__instructions">
+				<h2>Welcome to Mancala, a tradition from the dawn of time</h2>
+
+				<p>Mancala, from the Arabic <em>naqala</em> (نقلة), meaning “to move,” is a game believed to have originated in Africa thousands of years ago. Some versions, like the one on this page, use seeds as game pieces, representing harvest activities. Join a friend or neighbor and enjoy this relaxing, seed-sorting competition. Here are the rules.</p>
+
+				<ol>
+					<li>Each player has six holes of dirt. Player 1 is the bottom row, and Player 2 is the top row;</li>
+					<li>Each player will capture seeds and place them in a pile on their own grassy area, known as their mancala. Player 1’s mancala is on the right; Player 2’s is on the left.</li>
+					<li>On your turn, pick up all the seeds of one of your holes (click it) and place one seed in each hole going counter-clockwise, skipping over your opponent’s mancala. If a seed drops in your mancala, you have captured that seed.</li>
+					<li>If the last seed you drop lands in your mancala, you get to go again.</li>
+					<li>If the last seed you drop lands in an empty hole on your side of the board, you capture that seed and all the seeds in your opponent’s hole directly opposite.</li>
+					<li>If you still have seeds on your side of the board when the game ends, you capture all those seeds.</li>
+					<li>The player with the most seeds in their mancala wins.</li>
+				</ol>
 			</div>
 		</div>
 	`,
@@ -21,7 +51,7 @@ var manBoard = {
 		return {
 			holes: [],
 			winner: '',
-			grassBlades: 859,
+			winnerHeading: '',
 			turn: 'Player 1',
 			players: {
 				player1: {
@@ -91,7 +121,10 @@ var manBoard = {
 						(holeEl.number === 7 && this.turn === 'Player 2') ||
 						(holeEl.number === 14 && this.turn === 'Player 1')
 					) {
-						if (i === stonesCounter - 1 && holeEl.stones === 0) {
+						if (
+							(i === stonesCounter - 1 && holeEl.stones === 0 && holeEl.number - 1 < 6 && this.turn === 'Player 2') ||
+							(i === stonesCounter - 1 && holeEl.stones === 0 && holeEl.number - 1 > 6 && holeEl.number - 1 < 13 && this.turn === 'Player 1')
+							) {
 							var isEmptyHole = true;
 						}
 						holeEl.stones++;
@@ -179,11 +212,28 @@ var manBoard = {
 		determineWinner: function() {
 			if (this.holes[6].stones > this.holes[13].stones) {
 				this.winner = 'Player 2';
+				this.winnerHeading = 'Congratulations, Player 2! You Win!';
 			} else if (this.holes[13].stones > this.holes[6].stones) {
 				this.winner = 'Player 1';
+				this.winnerHeading = 'Congratulations, Player 1! You Win!';
 			} else {
 				this.winner = 'Tie';
+				this.winnerHeading = 'It\'s a tie!';
 			}
+		},
+
+		reset: function() {
+			this.holes = [];
+			this.winner = '';
+			this.winnerHeading = '';
+			this.turn = 'Player 1';
+			this.players.player1.points = 0;
+			this.players.player2.points = 0;
+			this.makeHoles();
+		},
+
+		goHome: function() {
+			eventHub.$emit('go-home');
 		}
 	},
 
@@ -195,7 +245,7 @@ var manBoard = {
 var Mancala = {
 	template: `
 		<div class="mancala">
-			<h1 class="mancala__heading1 game99__game-title">Mancala</h1>
+			<h1 class="mancala__heading1">Mancala</h1>
 			
 			<div class="mancala__board-wrapper">
 				<man-board></man-board>

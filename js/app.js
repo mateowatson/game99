@@ -47,7 +47,7 @@ var app = new Vue({
 	el: '#app',
 
 	data: {
-		currentView: 'mancala'
+		currentView: 'home'
 	},
 
 	components: {
