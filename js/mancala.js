@@ -32,7 +32,7 @@ var manBoard = {
 			<div class="mancala__instructions">
 				<h2>Welcome to Mancala, a tradition from the dawn of time</h2>
 
-				<p>Mancala, from the Arabic <em>naqala</em> (نقلة), meaning “to move,” is a game believed to have originated in Africa thousands of years ago. Some versions, like the one on this page, use seeds as game pieces, representing harvest activities. Join a friend or neighbor and enjoy this relaxing, seed-sorting competition. Here are the rules.</p>
+				<p>Mancala, from the Arabic <em>naqala</em> (نقلة), meaning “to move,” is a game believed to have originated in Africa thousands of years ago. Some versions, like the one on this page, use seeds as game pieces. Join a friend or neighbor and enjoy this relaxing, seed-sorting competition. Here are the rules.</p>
 
 				<ol>
 					<li>Each player has six holes of dirt. Player 1 is the bottom row, and Player 2 is the top row;</li>
