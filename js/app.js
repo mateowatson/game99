@@ -10,7 +10,7 @@ var Home = {
 							<option disabled value="">Games</option>
 							<option v-for="game in games" :value="game.view">{{ game.title }}</option>
 						</select>
-						<button class="btn game99__btn_primary" @click="startGame">Start</button>
+						<button class="btn game99__btn_primary" @click="startGame" :disabled='!gameSelected'>Start</button>
 					</div>
 				</div>
 			</div>
