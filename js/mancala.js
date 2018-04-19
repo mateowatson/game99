@@ -11,6 +11,7 @@ var manBoard = {
 			<div class="mancala__holes-wrapper">
 				<div class="mancala__holes">
 					<div class="mancala__hole" v-for="(hole, index) in holes" :class="hole.cssClasses">
+						<canvas :class="'mancala__grass-canvas mancala__grass-canvas_' + hole.number" v-if="hole.number === 7 || hole.number === 14" width="103" height="205"></canvas>
 						
 						<div class="mancala__stones" @click="playTurn(hole, index)">
 							<div class="mancala__stone" v-for="stone in hole.stones"></div>
@@ -239,6 +240,30 @@ var manBoard = {
 
 	created: function() {
 		this.makeHoles();
+	},
+
+	mounted: function() {
+		const canvasEls = document.querySelectorAll(".mancala__grass-canvas");
+		draw(canvasEls[0]);
+		draw(canvasEls[1]);
+		function draw(canvas) {
+			// const canvas = document.querySelector(".mancala__grass-canvas");
+			const ctx = canvas.getContext("2d");
+			ctx.fillStyle = "#7f8714";
+			const { width: w, height: h } = canvas;
+			let x, y, bladeWidth;
+			for (let i = 0; i < 1500; i++) {
+				x = Math.random() * w;
+				y = Math.random() * h;
+				bladeWidth = Math.random() * 3;
+				ctx.beginPath();
+				ctx.lineTo(x+(bladeWidth), y+(bladeWidth*6));
+				ctx.lineTo(x+(bladeWidth*.75), y+(bladeWidth*6));
+				ctx.lineTo(x+(bladeWidth*.25), y+(bladeWidth*6));
+				ctx.lineTo(x, y);
+				ctx.fill();
+			}
+		}
 	}
 }
 

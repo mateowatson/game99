@@ -542,18 +542,6 @@ body {
 	height: 200px;
 }
 
-.mancala__hole_store:before {
-	content: " ";
-	display: block;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: #000;
-	opacity: .25;
-}
-
 .mancala__hole_store:nth-child(14) {
 	left: 600px;
 }
@@ -569,6 +557,8 @@ body {
 	height: 80px;
 	border-radius: 25%;
 	background-color: var(--man-darkbrown);
+
+	z-index: 99999;
 
 	cursor: pointer;
 }
@@ -619,113 +609,16 @@ body {
 	color: var(--man-sand-dark);
 }
 
-.mancala__grass {
-	display: flex;
+.mancala__grass-canvas {
 	position: absolute;
-	width: 100%;
-	height: 100%;
-	flex-direction: row;
-	flex-wrap: wrap;
+	top: -5px;
+	left: -3px;
+	z-index: 9999;
 }
 
-@keyframes bladegeneral {
-	0% {
-		transform: rotate(0deg);
-	}
-	100% {
-		transform: rotate(-10deg);
-	}
-}
-
-.mancala__grass-blade {
-	display: flex;
-	width: 3px;
-	height: 10px;
-	margin-right: 0;
-	border-radius: 0 100% 0 100%;
-	background-color: var(--man-dark-green);
-	transform-origin: bottom right;
-	margin-bottom: -3px;
-
-	transform: rotate(0deg);
-
-	animation-name: bladegeneral;
-	animation-duration: 1.3s;
-	animation-timing-function: ease;
-	animation-delay: 0s;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
-	animation-fill-mode: none;
-	animation-play-state: running;
-}
-
-@keyframes bladethree {
-	0% {
-		transform: rotate(35deg);
-	}
-	100% {
-		transform: rotate(5deg);
-	}
-}
-
-.mancala__grass-blade:nth-child(3n + 1) {
-	transform: rotate(35deg);
-	margin-top: -2px;
-
-	animation-name: bladethree;
-	animation-duration: 1.3s;
-	animation-timing-function: ease;
-	animation-delay: 0s;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
-	animation-fill-mode: none;
-	animation-play-state: running;
-}
-
-@keyframes bladefour {
-	0% {
-		transform: rotate(25deg);
-	}
-	100% {
-		transform: rotate(10deg);
-	}
-}
-
-.mancala__grass-blade:nth-child(4n + 1) {
-	transform: rotate(25deg);
-	margin-top: -1px;
-
-	animation-name: bladefour;
-	animation-duration: 1.3s;
-	animation-timing-function: ease;
-	animation-delay: 0s;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
-	animation-fill-mode: none;
-	animation-play-state: running;
-}
-
-@keyframes bladefive {
-	0% {
-		transform: rotate(10deg);
-	}
-	100% {
-		transform: rotate(-15deg);
-	}
-}
-
-.mancala__grass-blade:nth-child(5n + 1) {
-	transform: rotate(10deg);
-	margin-bottom: -3px;
-
-	animation-name: bladefive;
-	animation-duration: 1.3s;
-	animation-timing-function: ease;
-	animation-delay: 0s;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
-	animation-fill-mode: none;
-	animation-play-state: running;
+.mancala__grass-canvas_14 {
+	left: auto;
+	right: -3px;
 }
 /* ------------------------------------------- */
 /* --------------- END MANCALA --------------- */
