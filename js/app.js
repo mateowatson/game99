@@ -25,7 +25,8 @@ var Home = {
 			games: [
 				{ title: 'Hangman', view: 'hangman'},
 				{ title: 'Tic Tac Toe', view: 'tictactoe' },
-				{ title: 'Mancala', view: 'mancala' }
+				{ title: 'Mancala', view: 'mancala' },
+				{ title: 'Checkers', view: 'checkers' }
 			],
 			gameSelected: ''
 		}
@@ -54,7 +55,8 @@ var app = new Vue({
 		home: Home,
 		hangman: Hangman,
 		tictactoe: TicTacToe,
-		mancala: Mancala
+		mancala: Mancala,
+		checkers: Checkers
 	},
 
 	methods: {
@@ -80,6 +82,9 @@ var app = new Vue({
 					break;
 				case '#mancala':
 					this.currentView = 'mancala';
+					break;
+				case '#checkers':
+					this.currentView = 'checkers';
 					break;
 				default:
 					this.currentView = 'home';
