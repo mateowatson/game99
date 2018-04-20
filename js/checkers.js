@@ -154,23 +154,31 @@ var Checkers = {
 
 				if (!isAvailableSpaceLeft) {
 					var jumpSpaceLeft = [row + forward, spaceLeft[1] - 1];
-					var jumpSpaceRight = [row + forward, spaceLeft[1] + 2];
 					var isAvailableJumpSpaceLeft = true;
-					console.log(jumpSpaceLeft);
-					console.log(jumpSpaceRight);
 
 					for (var i = 0; i < this.pieces.length; i++) {
 						if (jumpSpaceLeft[0] === this.pieces[i].boardRow && jumpSpaceLeft[1] === this.pieces[i].boardCell) {
-							isAvailableJumpSpaceLeft = false;
-						}
-
-						if (jumpSpaceRight[0] === this.pieces[i].boardRow && jumpSpaceRight[1] === this.pieces[i].boardCell) {
 							isAvailableJumpSpaceLeft = false;
 						}
 					}
 
 					if (isAvailableJumpSpaceLeft) {
 						this.availableMoves.push(jumpSpaceLeft);
+					}
+				}
+
+				if (!isAvailableSpaceRight) {
+					var jumpSpaceRight = [row + forward, spaceRight[1] + 1];
+					var isAvailableJumpSpaceRight = true;
+
+					for (var i = 0; i < this.pieces.length; i++) {
+						if (jumpSpaceRight[0] === this.pieces[i].boardRow && jumpSpaceRight[1] === this.pieces[i].boardCell) {
+							isAvailableJumpSpaceRight = false;
+						}
+					}
+
+					if (isAvailableJumpSpaceRight) {
+						this.availableMoves.push(jumpSpaceRight);
 					}
 				}
 
@@ -201,7 +209,6 @@ var Checkers = {
 				}
 
 				if (isAvailable) {
-
 					for (var i = 0; i < this.pieces.length; i++) {
 						if (this.pieces[i].moveMode) {
 							this.pieces[i].boardCell = spaceIndex;
