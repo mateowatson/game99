@@ -139,24 +139,46 @@ var Checkers = {
 				// console.log(row);
 				var spaceLeft = [row, piece.boardCell - 1];
 				var spaceRight = [row, piece.boardCell + 1];
-				var isAvailablespaceLeft = true;
-				var isAvailablespaceRight = true;
+				var isAvailableSpaceLeft = true;
+				var isAvailableSpaceRight = true;
 
 				for (var i = 0; i < this.pieces.length; i++) {
 					if (spaceLeft[0] === this.pieces[i].boardRow && spaceLeft[1] === this.pieces[i].boardCell) {
-						isAvailablespaceLeft = false;
+						isAvailableSpaceLeft = false;
 					}
 
 					if (spaceRight[0] === this.pieces[i].boardRow && spaceRight[1] === this.pieces[i].boardCell) {
-						isAvailablespaceRight = false;
+						isAvailableSpaceRight = false;
 					}
 				}
 
-				if (isAvailablespaceLeft) {
+				if (!isAvailableSpaceLeft) {
+					var jumpSpaceLeft = [row + forward, spaceLeft[1] - 1];
+					var jumpSpaceRight = [row + forward, spaceLeft[1] + 2];
+					var isAvailableJumpSpaceLeft = true;
+					console.log(jumpSpaceLeft);
+					console.log(jumpSpaceRight);
+
+					for (var i = 0; i < this.pieces.length; i++) {
+						if (jumpSpaceLeft[0] === this.pieces[i].boardRow && jumpSpaceLeft[1] === this.pieces[i].boardCell) {
+							isAvailableJumpSpaceLeft = false;
+						}
+
+						if (jumpSpaceRight[0] === this.pieces[i].boardRow && jumpSpaceRight[1] === this.pieces[i].boardCell) {
+							isAvailableJumpSpaceLeft = false;
+						}
+					}
+
+					if (isAvailableJumpSpaceLeft) {
+						this.availableMoves.push(jumpSpaceLeft);
+					}
+				}
+
+				if (isAvailableSpaceLeft) {
 					this.availableMoves.push(spaceLeft);
 				}
 
-				if (isAvailablespaceRight) {
+				if (isAvailableSpaceRight) {
 					this.availableMoves.push(spaceRight);
 				}
 			} else if (this.moveMode && piece.moveMode) {
