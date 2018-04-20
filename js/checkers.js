@@ -124,7 +124,7 @@ var Checkers = {
 				rowCoorValue += 50;
 			}
 
-			console.log(this.coordinates[0][0][3]);
+			// console.log(this.coordinates[0][0][3]);
 		},
 
 		pieceClickHandler: function(piece, index) {
@@ -136,26 +136,29 @@ var Checkers = {
 				var forward = (piece.player === 1 ? -1 : 1);
 				// console.log(forward);
 				var row = piece.boardRow + forward;
-				console.log(row);
+				// console.log(row);
 				var spaceLeft = [row, piece.boardCell - 1];
 				var spaceRight = [row, piece.boardCell + 1];
-				var isAvailable = true;
+				var isAvailablespaceLeft = true;
+				var isAvailablespaceRight = true;
 
 				for (var i = 0; i < this.pieces.length; i++) {
 					if (spaceLeft[0] === this.pieces[i].boardRow && spaceLeft[1] === this.pieces[i].boardCell) {
-						isAvailable = false;
+						isAvailablespaceLeft = false;
 					}
 
 					if (spaceRight[0] === this.pieces[i].boardRow && spaceRight[1] === this.pieces[i].boardCell) {
-						isAvailable = false;
+						isAvailablespaceRight = false;
 					}
 				}
 
-				if (isAvailable) {
+				if (isAvailablespaceLeft) {
 					this.availableMoves.push(spaceLeft);
+				}
+
+				if (isAvailablespaceRight) {
 					this.availableMoves.push(spaceRight);
 				}
-				
 			} else if (this.moveMode && piece.moveMode) {
 				this.moveMode = false;
 				piece.moveMode = false;
@@ -167,27 +170,21 @@ var Checkers = {
 
 		spaceClickHandler: function(rowIndex, spaceIndex) {
 			if (this.moveMode) {
-				var isAvailable = true;
+				var isAvailable = false;
 				
 				for (var i = 0; i < this.availableMoves.length; i++) {
-					if (this.board[rowIndex] === this.availableMoves[i][0] && this.board[spaceIndex] === this.availableMoves[i][1]) {
+					if (rowIndex === this.availableMoves[i][0] && spaceIndex === this.availableMoves[i][1]) {
 						isAvailable = true;
 					}
 				}
 
 				if (isAvailable) {
-					console.log(isAvailable);
 
 					for (var i = 0; i < this.pieces.length; i++) {
 						if (this.pieces[i].moveMode) {
-							console.log('kkzzss');
-							console.log(this.pieces[i].location);
 							this.pieces[i].boardCell = spaceIndex;
-							this.pieces[i].rowCell = rowIndex;
+							this.pieces[i].boardRow = rowIndex;
 							this.pieces[i].location = this.coordinates[rowIndex][0][spaceIndex];
-
-							console.log(this.pieces[i].location);
-
 						}
 					}
 				}
