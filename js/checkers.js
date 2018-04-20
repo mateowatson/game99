@@ -8,7 +8,8 @@ var Checkers = {
 					class="checkers__row">
 					<div
 						v-for="(space, spaceIndex) in row"
-						class="checkers__space">
+						class="checkers__space"
+						@click="spaceClickHandler(rowIndex, spaceIndex)">
 						<div
 							v-for="(availableMove, avMoveIndex) in availableMoves"
 							class="checkers__space-available "
@@ -160,6 +161,35 @@ var Checkers = {
 				piece.moveMode = false;
 				for (var i = 0; i <= this.availableMoves.length; i++) {
 					this.availableMoves.pop();
+				}
+			}
+		},
+
+		spaceClickHandler: function(rowIndex, spaceIndex) {
+			if (this.moveMode) {
+				var isAvailable = true;
+				
+				for (var i = 0; i < this.availableMoves.length; i++) {
+					if (this.board[rowIndex] === this.availableMoves[i][0] && this.board[spaceIndex] === this.availableMoves[i][1]) {
+						isAvailable = true;
+					}
+				}
+
+				if (isAvailable) {
+					console.log(isAvailable);
+
+					for (var i = 0; i < this.pieces.length; i++) {
+						if (this.pieces[i].moveMode) {
+							console.log('kkzzss');
+							console.log(this.pieces[i].location);
+							this.pieces[i].boardCell = spaceIndex;
+							this.pieces[i].rowCell = rowIndex;
+							this.pieces[i].location = this.coordinates[rowIndex][0][spaceIndex];
+
+							console.log(this.pieces[i].location);
+
+						}
+					}
 				}
 			}
 		}
