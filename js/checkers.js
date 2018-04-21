@@ -2,6 +2,7 @@ var Checkers = {
 	template: `
 		<div>
 			<h1>Checkers</h1>
+			<p>Turn: Player {{ player }}</p>
 			<div class="checkers__board">
 				<div
 					v-for="(row, rowIndex) in board"
@@ -123,11 +124,9 @@ var Checkers = {
 
 				rowCoorValue += 50;
 			}
-
-			// console.log(this.coordinates[0][0][3]);
 		},
 
-		pieceClickHandler: function(piece, index) {
+		pieceClickHandler: function(piece, index, isMidMultiJump) {
 			if (
 					(!this.moveMode && !piece.moveMode) &&
 					(piece.player === this.player)
@@ -135,15 +134,16 @@ var Checkers = {
 				this.moveMode = true;
 				piece.moveMode = true;
 
-				// Find empty spaces in front
 				var forward = (piece.player === 1 ? -1 : 1);
-				// console.log(forward);
 				var row = piece.boardRow + forward;
-				// console.log(row);
 				var spaceLeft = [row, piece.boardCell - 1];
 				var spaceRight = [row, piece.boardCell + 1];
 				var isAvailableSpaceLeft = true;
 				var isAvailableSpaceRight = true;
+				var spaceLeftOffBoard = false;
+				var spaceRightOffBoard = false;
+				var isAvailableJumpSpaceLeft = false;
+				var isAvailableJumpSpaceRight = false;
 
 				for (var i = 0; i < this.pieces.length; i++) {
 					if (spaceLeft[0] === this.pieces[i].boardRow && spaceLeft[1] === this.pieces[i].boardCell) {
@@ -155,13 +155,15 @@ var Checkers = {
 					}
 				}
 
+
+				
 				if (!isAvailableSpaceLeft) {
 					var jumpSpaceLeft = [row + forward, spaceLeft[1] - 1];
-					var isAvailableJumpSpaceLeft = true;
+					
 
 					for (var i = 0; i < this.pieces.length; i++) {
-						if (jumpSpaceLeft[0] === this.pieces[i].boardRow && jumpSpaceLeft[1] === this.pieces[i].boardCell) {
-							isAvailableJumpSpaceLeft = false;
+						if (jumpSpaceLeft[0] !== this.pieces[i].boardRow && jumpSpaceLeft[1] !== this.pieces[i].boardCell) {
+							isAvailableJumpSpaceLeft = true;
 						}
 					}
 
@@ -172,11 +174,11 @@ var Checkers = {
 
 				if (!isAvailableSpaceRight) {
 					var jumpSpaceRight = [row + forward, spaceRight[1] + 1];
-					var isAvailableJumpSpaceRight = true;
+					
 
 					for (var i = 0; i < this.pieces.length; i++) {
-						if (jumpSpaceRight[0] === this.pieces[i].boardRow && jumpSpaceRight[1] === this.pieces[i].boardCell) {
-							isAvailableJumpSpaceRight = false;
+						if (jumpSpaceRight[0] !== this.pieces[i].boardRow && jumpSpaceRight[1] !== this.pieces[i].boardCell) {
+							isAvailableJumpSpaceRight = true;
 						}
 					}
 
@@ -192,12 +194,59 @@ var Checkers = {
 				if (isAvailableSpaceRight) {
 					this.availableMoves.push(spaceRight);
 				}
-			} else if (this.moveMode && piece.moveMode) {
-				this.moveMode = false;
-				piece.moveMode = false;
-				for (var i = 0; i <= this.availableMoves.length; i++) {
-					this.availableMoves.pop();
+
+				if (
+					(this.availableMoves[0][0] < 0 || this.availableMoves[0][1] < 0) &&
+					(this.availableMoves[1][0] < 0 || this.availableMoves[1][1] < 0) &&
+					(isMidMultiJump)
+					) {
+					console.log('fff');
+					this.moveMode = false;
+					piece.moveMode = false;
+					for (var ai = 0; ai <= this.availableMoves.length; ai++) {
+						this.availableMoves.pop();
+					}
+
+					if (this.player === 1) {
+						this.player = 2;
+					} else {
+						this.player = 1;
+					}
 				}
+
+				if (isMidMultiJump && (!isAvailableJumpSpaceLeft || !isAvailableJumpSpaceRight)) {
+					console.log('ccc');
+					this.moveMode = false;
+					piece.moveMode = false;
+					for (var ai = 0; ai <= this.availableMoves.length; ai++) {
+						this.availableMoves.pop();
+					}
+
+					if (this.player === 1) {
+						this.player = 2;
+					} else {
+						this.player = 1;
+					}
+				}
+			} else if (this.moveMode && piece.moveMode) {
+				if (!isMidMultiJump) {
+					this.moveMode = false;
+					piece.moveMode = false;
+					for (var i = 0; i <= this.availableMoves.length; i++) {
+						this.availableMoves.pop();
+					}
+				} else {
+					if (this.availableMoves.length < 1) {
+						this.moveMode = false;
+						piece.moveMode = false;
+						if (this.player === 1) {
+							this.player = 2;
+						} else {
+							this.player = 1;
+						}
+					}
+				}
+				
 			}
 		},
 
@@ -215,6 +264,7 @@ var Checkers = {
 				if (isAvailable) {
 					for (var i = 0; i < this.pieces.length; i++) {
 						if (this.pieces[i].moveMode && this.pieces[i].player === this.player) {
+							var aPieceWasCaptured = false;
 
 							if (spaceIndex + 2 === this.pieces[i].boardCell) {
 								for (var capti = 0; capti < this.pieces.length; capti++) {
@@ -222,6 +272,8 @@ var Checkers = {
 										this.pieces[capti].location = [-9999, 0];
 										this.pieces[capti].boardCell = -1;
 										this.pieces[capti].boardRow = -1;
+
+										aPieceWasCaptured = true;
 									}
 								}
 							}
@@ -232,6 +284,8 @@ var Checkers = {
 										this.pieces[capti].location = [-9999, 0];
 										this.pieces[capti].boardCell = -1;
 										this.pieces[capti].boardRow = -1;
+
+										aPieceWasCaptured = true;
 									}
 								}
 							}
@@ -240,11 +294,29 @@ var Checkers = {
 							this.pieces[i].boardRow = rowIndex;
 							this.pieces[i].location = this.coordinates[rowIndex][0][spaceIndex];
 
-							if (this.player === 1) {
-								this.player = 2
+							if (!aPieceWasCaptured) {
+								this.pieces[i].moveMode = false;
+								this.moveMode = false;
+								for (var ai = 0; ai <= this.availableMoves.length; ai++) {
+									this.availableMoves.pop();
+								}
+
+								if (this.player === 1) {
+									this.player = 2;
+								} else {
+									this.player = 1;
+								}
 							} else {
-								this.player = 1
+								this.pieces[i].moveMode = false;
+								this.moveMode = false;
+
+								for (var ai = 0; ai <= this.availableMoves.length; ai++) {
+									this.availableMoves.pop();
+								}
+
+								this.pieceClickHandler(this.pieces[i], i, true);
 							}
+							
 						}
 					}
 				}
