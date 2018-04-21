@@ -128,7 +128,10 @@ var Checkers = {
 		},
 
 		pieceClickHandler: function(piece, index) {
-			if (!this.moveMode && !piece.moveMode) {
+			if (
+					(!this.moveMode && !piece.moveMode) &&
+					(piece.player === this.player)
+				) {
 				this.moveMode = true;
 				piece.moveMode = true;
 
