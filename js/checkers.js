@@ -33,7 +33,7 @@ var Checkers = {
 			board: [],
 			pieces: [],
 			coordinates: [],
-			turn: 'Player 1',
+			player: 1,
 			moveMode: false,
 			availableMoves: []
 		}
@@ -201,6 +201,7 @@ var Checkers = {
 		spaceClickHandler: function(rowIndex, spaceIndex) {
 			if (this.moveMode) {
 				var isAvailable = false;
+				var forward = (this.player === 1 ? -1 : 1);
 				
 				for (var i = 0; i < this.availableMoves.length; i++) {
 					if (rowIndex === this.availableMoves[i][0] && spaceIndex === this.availableMoves[i][1]) {
@@ -210,10 +211,37 @@ var Checkers = {
 
 				if (isAvailable) {
 					for (var i = 0; i < this.pieces.length; i++) {
-						if (this.pieces[i].moveMode) {
+						if (this.pieces[i].moveMode && this.pieces[i].player === this.player) {
+
+							if (spaceIndex + 2 === this.pieces[i].boardCell) {
+								for (var capti = 0; capti < this.pieces.length; capti++) {
+									if (this.pieces[capti].boardCell === spaceIndex + 1 && this.pieces[capti].boardRow === this.pieces[i].boardRow + forward) {
+										this.pieces[capti].location = [-9999, 0];
+										this.pieces[capti].boardCell = -1;
+										this.pieces[capti].boardRow = -1;
+									}
+								}
+							}
+
+							if (spaceIndex - 2 === this.pieces[i].boardCell) {
+								for (var capti = 0; capti < this.pieces.length; capti++) {
+									if (this.pieces[capti].boardCell === spaceIndex - 1 && this.pieces[capti].boardRow === this.pieces[i].boardRow + forward) {
+										this.pieces[capti].location = [-9999, 0];
+										this.pieces[capti].boardCell = -1;
+										this.pieces[capti].boardRow = -1;
+									}
+								}
+							}
+
 							this.pieces[i].boardCell = spaceIndex;
 							this.pieces[i].boardRow = rowIndex;
 							this.pieces[i].location = this.coordinates[rowIndex][0][spaceIndex];
+
+							if (this.player === 1) {
+								this.player = 2
+							} else {
+								this.player = 1
+							}
 						}
 					}
 				}
