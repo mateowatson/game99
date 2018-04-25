@@ -40,6 +40,12 @@ var Checkers = {
 		}
 	},
 
+	computed: {
+		forward: function() {
+			return this.player === 1 ? -1 : 1;
+		}
+	},
+
 	methods: {
 		createBoard: function() {
 			for (var i = 0; i < 8; i++) {
@@ -126,10 +132,82 @@ var Checkers = {
 			}
 		},
 
+		isJumpPossible: function() {
+			var isJumpPossible = [false, []];
+			for (var i = 0; i < this.pieces.length; i++) {
+				var player = 2;
+				var jumpSpaceLeft = [];
+				var jumpSpaceRight = [];
+				var jumpSpaceLeftCapture = [];
+				var jumpSpaceRightCapture = [];
+				var isAvailableJumpSpaceLeft = false;
+				var isAvailableJumpSpaceRight = false;
+				
+				if (i > 11) {
+					player = 1;
+				}
+
+				if (player === this.player) {
+					jumpSpaceLeft = [this.pieces[i].boardCell - 2, this.pieces[i].boardRow + this.forward*2];
+					jumpSpaceLeftCapture = [this.pieces[i].boardCell - 1, this.pieces[i].boardRow + this.forward];
+					jumpSpaceRight = [this.pieces[i].boardCell + 2, this.pieces[i].boardRow + this.forward*2];
+					jumpSpaceRightCapture = [this.pieces[i].boardCell + 1, this.pieces[i].boardRow + this.forward];
+
+					for (var ji = 0; ji < this.pieces.length; ji++) {
+						if (
+							(
+								jumpSpaceLeft[0] !== this.pieces[ji].boardRow &&
+								jumpSpaceLeft[1] !== this.pieces[ji].boardCell
+							) &&
+							(
+								jumpSpaceLeftCapture[0] === this.pieces[ji].boardRow + this.forward &&
+								jumpSpaceLeftCapture[1] === this.pieces[ji].boardCell - 1
+							) &&
+							(this.player === this.pieces[ji].player)
+						) {
+							// isAvailableJumpSpaceLeft = true;
+							console.log('isAvailableJumpSpaceRight ', ji,  jumpSpaceRight);
+						}
+					}
+
+					for (var ji = 0; ji < this.pieces.length; ji++) {
+						if (
+							(
+								jumpSpaceRight[0] !== this.pieces[ji].boardRow &&
+								jumpSpaceRight[1] !== this.pieces[ji].boardCell
+							) &&
+							(
+								jumpSpaceRightCapture[0] === this.pieces[ji].boardRow + this.forward &&
+								jumpSpaceRightCapture[1] === this.pieces[ji].boardCell + 1
+							) &&
+							(this.player === this.pieces[ji].player)
+						) {
+							// isAvailableJumpSpaceRight = true;
+							console.log('isAvailableJumpSpaceLeft ', ji,  jumpSpaceLeft);
+						}
+					}
+				}
+
+				
+
+				if (isAvailableJumpSpaceLeft || isAvailableJumpSpaceRight) {
+					isJumpPossible[0] = true;
+					isJumpPossible[1].push(i);
+				}
+			}
+			return isJumpPossible;
+		},
+
 		pieceClickHandler: function(piece, index, isMidMultiJump) {
+			var jumpPieces = this.isJumpPossible()[1];
+			var isPieceJump = jumpPieces.filter(function(pieceIndex) {
+				return pieceIndex === index;
+			});
+			// console.log(jumpPieces, isPieceJump);
 			if (
 					(!this.moveMode && !piece.moveMode) &&
-					(piece.player === this.player)
+					(piece.player === this.player) &&
+					(jumpPieces.length === 0)
 				) {
 				this.moveMode = true;
 				piece.moveMode = true;
@@ -199,8 +277,7 @@ var Checkers = {
 					(this.availableMoves[0][0] < 0 || this.availableMoves[0][1] < 0) &&
 					(this.availableMoves[1][0] < 0 || this.availableMoves[1][1] < 0) &&
 					(isMidMultiJump)
-					) {
-					console.log('fff');
+				) {
 					this.moveMode = false;
 					piece.moveMode = false;
 					for (var ai = 0; ai <= this.availableMoves.length; ai++) {
@@ -246,7 +323,6 @@ var Checkers = {
 						}
 					}
 				}
-				
 			}
 		},
 
