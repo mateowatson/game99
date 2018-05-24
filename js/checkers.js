@@ -9,21 +9,12 @@ var Checkers = {
 					class="checkers__row">
 					<div
 						v-for="(space, spaceIndex) in row"
-						class="checkers__space"
-						@click="spaceClickHandler(rowIndex, spaceIndex)">
+						class="checkers__space">
 						<div
 							v-for="(availableMove, avMoveIndex) in availableMoves"
-							class="checkers__space-available "
-							:class="(rowIndex === availableMove[0] && spaceIndex === availableMove[1] ? 'checkers__space-available_true' : 'checkers__space-available_false')">
+							class="checkers__space-available ">
 						</div>
 					</div>
-				</div>
-				<div
-					v-for="(piece, index) in pieces"
-					class="checkers__piece"
-					:class="(index <= 11 ? 'checkers__piece_player2 ' : ' ') + (piece.moveMode ? 'checkers__piece_move ' : ' ')"
-					:style="'top: ' + piece.location[0] + 'px; left: ' + piece.location[1] + 'px;'"
-					@click="pieceClickHandler(piece, index)">
 				</div>
 			</div>
 		</div>
@@ -32,377 +23,30 @@ var Checkers = {
 	data: function() {
 		return {
 			board: [],
-			pieces: [],
 			coordinates: [],
 			player: 1,
 			moveMode: false,
 			availableMoves: []
-		}
-	},
-
-	computed: {
-		forward: function() {
-			return this.player === 1 ? -1 : 1;
+			players: {
+				player1: {},
+				player2: {}
+			}
 		}
 	},
 
 	methods: {
-		createBoard: function() {
-			for (var i = 0; i < 8; i++) {
-				this.board.push([0, 1, 2, 3, 4, 5, 6, 7])
-			}
-		},
+		createSpaces: function() {
+			var space = {};
+			var spaceOccupant = this.players.player1;
+			var spaceOccupantStatus = 'man';
+			var forward = 1;
+			var possibleMoves = function(pm_spaceOccupantStatus) {
 
-		createPieces: function() {
-			for (var i = 0; i < 24; i++) {
-				var player = 2;
-				var row;
-				var cell;
-				var location;
-				var piece;
-
-				if (i > 11) {
-					player = 1;
-				}
-
-				if (player === 2) {
-					if (i < 4) {
-						row = 0;
-						cell = i * 2 + 1;
-					} else if (i >= 4 && i < 8) {
-						row = 1;
-						cell = (i - 4) * 2;
-					} else if (i >= 8 && i < 12) {
-						row = 2;
-						cell = (i - 8) * 2 + 1;
-					}
-					
-					location = this.coordinates[row][0][cell];
-
-					piece = {
-						id: i,
-						player: player,
-						location: location,
-						boardRow: row,
-						boardCell: cell
-					}
-				} else {
-					if (i <= 15) {
-						row = 5;
-						cell = (i - 12) * 2;
-					} else if (i > 15 && i < 20) {
-						row = 6;
-						cell = (i - 16) * 2 + 1;
-					} else if (i >= 20 && i < 24) {
-						row = 7;
-						cell = (i - 20) * 2;
-					}
-
-					location = this.coordinates[row][0][cell];
-
-					piece = {
-						id: i,
-						player: player,
-						location: location,
-						boardRow: row,
-						boardCell: cell
-					}
-				}
-
-				piece.moveMode = false;
-				this.pieces.push(piece);
-			}
-		},
-
-		createCoordinates: function() {
-			var rowCoorValue = 25;
-			for (var ri = 0; ri < 8; ri++) {
-				var cellCoorValue = 25;
-
-				var cellCoors = [];
-
-				for (var ci = 0; ci < 8; ci++) {
-					cellCoors.push([rowCoorValue - 20, cellCoorValue - 20]);
-					cellCoorValue += 50;
-				}
-
-				this.coordinates.push([cellCoors]);
-
-				rowCoorValue += 50;
-			}
-		},
-
-		isJumpPossible: function() {
-			var isJumpPossible = [false, []];
-			for (var i = 0; i < this.pieces.length; i++) {
-				var player = 2;
-				var jumpSpaceLeft = [];
-				var jumpSpaceRight = [];
-				var jumpSpaceLeftCapture = [];
-				var jumpSpaceRightCapture = [];
-				var isAvailableJumpSpaceLeft = false;
-				var isAvailableJumpSpaceRight = false;
-				
-				if (i > 11) {
-					player = 1;
-				}
-
-				if (player === this.player) {
-					jumpSpaceLeft = [this.pieces[i].boardCell - 2, this.pieces[i].boardRow + this.forward*2];
-					jumpSpaceLeftCapture = [this.pieces[i].boardCell - 1, this.pieces[i].boardRow + this.forward];
-					jumpSpaceRight = [this.pieces[i].boardCell + 2, this.pieces[i].boardRow + this.forward*2];
-					jumpSpaceRightCapture = [this.pieces[i].boardCell + 1, this.pieces[i].boardRow + this.forward];
-
-					for (var ji = 0; ji < this.pieces.length; ji++) {
-						if (
-							(
-								jumpSpaceLeft[0] !== this.pieces[ji].boardRow &&
-								jumpSpaceLeft[1] !== this.pieces[ji].boardCell
-							) &&
-							(
-								jumpSpaceLeftCapture[0] === this.pieces[ji].boardRow + this.forward &&
-								jumpSpaceLeftCapture[1] === this.pieces[ji].boardCell - 1
-							) &&
-							(this.player === this.pieces[ji].player)
-						) {
-							// isAvailableJumpSpaceLeft = true;
-							console.log('isAvailableJumpSpaceRight ', ji,  jumpSpaceRight);
-						}
-					}
-
-					for (var ji = 0; ji < this.pieces.length; ji++) {
-						if (
-							(
-								jumpSpaceRight[0] !== this.pieces[ji].boardRow &&
-								jumpSpaceRight[1] !== this.pieces[ji].boardCell
-							) &&
-							(
-								jumpSpaceRightCapture[0] === this.pieces[ji].boardRow + this.forward &&
-								jumpSpaceRightCapture[1] === this.pieces[ji].boardCell + 1
-							) &&
-							(this.player === this.pieces[ji].player)
-						) {
-							// isAvailableJumpSpaceRight = true;
-							console.log('isAvailableJumpSpaceLeft ', ji,  jumpSpaceLeft);
-						}
-					}
-				}
-
-				
-
-				if (isAvailableJumpSpaceLeft || isAvailableJumpSpaceRight) {
-					isJumpPossible[0] = true;
-					isJumpPossible[1].push(i);
-				}
-			}
-			return isJumpPossible;
-		},
-
-		pieceClickHandler: function(piece, index, isMidMultiJump) {
-			var jumpPieces = this.isJumpPossible()[1];
-			var isPieceJump = jumpPieces.filter(function(pieceIndex) {
-				return pieceIndex === index;
-			});
-			// console.log(jumpPieces, isPieceJump);
-			if (
-					(!this.moveMode && !piece.moveMode) &&
-					(piece.player === this.player) &&
-					(jumpPieces.length === 0)
-				) {
-				this.moveMode = true;
-				piece.moveMode = true;
-
-				var forward = (piece.player === 1 ? -1 : 1);
-				var row = piece.boardRow + forward;
-				var spaceLeft = [row, piece.boardCell - 1];
-				var spaceRight = [row, piece.boardCell + 1];
-				var isAvailableSpaceLeft = true;
-				var isAvailableSpaceRight = true;
-				var spaceLeftOffBoard = false;
-				var spaceRightOffBoard = false;
-				var isAvailableJumpSpaceLeft = false;
-				var isAvailableJumpSpaceRight = false;
-
-				for (var i = 0; i < this.pieces.length; i++) {
-					if (spaceLeft[0] === this.pieces[i].boardRow && spaceLeft[1] === this.pieces[i].boardCell) {
-						isAvailableSpaceLeft = false;
-					}
-
-					if (spaceRight[0] === this.pieces[i].boardRow && spaceRight[1] === this.pieces[i].boardCell) {
-						isAvailableSpaceRight = false;
-					}
-				}
-
-
-				
-				if (!isAvailableSpaceLeft) {
-					var jumpSpaceLeft = [row + forward, spaceLeft[1] - 1];
-					
-
-					for (var i = 0; i < this.pieces.length; i++) {
-						if (jumpSpaceLeft[0] !== this.pieces[i].boardRow && jumpSpaceLeft[1] !== this.pieces[i].boardCell) {
-							isAvailableJumpSpaceLeft = true;
-						}
-					}
-
-					if (isAvailableJumpSpaceLeft) {
-						this.availableMoves.push(jumpSpaceLeft);
-					}
-				}
-
-				if (!isAvailableSpaceRight) {
-					var jumpSpaceRight = [row + forward, spaceRight[1] + 1];
-					
-
-					for (var i = 0; i < this.pieces.length; i++) {
-						if (jumpSpaceRight[0] !== this.pieces[i].boardRow && jumpSpaceRight[1] !== this.pieces[i].boardCell) {
-							isAvailableJumpSpaceRight = true;
-						}
-					}
-
-					if (isAvailableJumpSpaceRight) {
-						this.availableMoves.push(jumpSpaceRight);
-					}
-				}
-
-				if (isAvailableSpaceLeft) {
-					this.availableMoves.push(spaceLeft);
-				}
-
-				if (isAvailableSpaceRight) {
-					this.availableMoves.push(spaceRight);
-				}
-
-				if (
-					(this.availableMoves[0][0] < 0 || this.availableMoves[0][1] < 0) &&
-					(this.availableMoves[1][0] < 0 || this.availableMoves[1][1] < 0) &&
-					(isMidMultiJump)
-				) {
-					this.moveMode = false;
-					piece.moveMode = false;
-					for (var ai = 0; ai <= this.availableMoves.length; ai++) {
-						this.availableMoves.pop();
-					}
-
-					if (this.player === 1) {
-						this.player = 2;
-					} else {
-						this.player = 1;
-					}
-				}
-
-				if (isMidMultiJump && (!isAvailableJumpSpaceLeft || !isAvailableJumpSpaceRight)) {
-					console.log('ccc');
-					this.moveMode = false;
-					piece.moveMode = false;
-					for (var ai = 0; ai <= this.availableMoves.length; ai++) {
-						this.availableMoves.pop();
-					}
-
-					if (this.player === 1) {
-						this.player = 2;
-					} else {
-						this.player = 1;
-					}
-				}
-			} else if (this.moveMode && piece.moveMode) {
-				if (!isMidMultiJump) {
-					this.moveMode = false;
-					piece.moveMode = false;
-					for (var i = 0; i <= this.availableMoves.length; i++) {
-						this.availableMoves.pop();
-					}
-				} else {
-					if (this.availableMoves.length < 1) {
-						this.moveMode = false;
-						piece.moveMode = false;
-						if (this.player === 1) {
-							this.player = 2;
-						} else {
-							this.player = 1;
-						}
-					}
-				}
-			}
-		},
-
-		spaceClickHandler: function(rowIndex, spaceIndex) {
-			if (this.moveMode) {
-				var isAvailable = false;
-				var forward = (this.player === 1 ? -1 : 1);
-				
-				for (var i = 0; i < this.availableMoves.length; i++) {
-					if (rowIndex === this.availableMoves[i][0] && spaceIndex === this.availableMoves[i][1]) {
-						isAvailable = true;
-					}
-				}
-
-				if (isAvailable) {
-					for (var i = 0; i < this.pieces.length; i++) {
-						if (this.pieces[i].moveMode && this.pieces[i].player === this.player) {
-							var aPieceWasCaptured = false;
-
-							if (spaceIndex + 2 === this.pieces[i].boardCell) {
-								for (var capti = 0; capti < this.pieces.length; capti++) {
-									if (this.pieces[capti].boardCell === spaceIndex + 1 && this.pieces[capti].boardRow === this.pieces[i].boardRow + forward) {
-										this.pieces[capti].location = [-9999, 0];
-										this.pieces[capti].boardCell = -1;
-										this.pieces[capti].boardRow = -1;
-
-										aPieceWasCaptured = true;
-									}
-								}
-							}
-
-							if (spaceIndex - 2 === this.pieces[i].boardCell) {
-								for (var capti = 0; capti < this.pieces.length; capti++) {
-									if (this.pieces[capti].boardCell === spaceIndex - 1 && this.pieces[capti].boardRow === this.pieces[i].boardRow + forward) {
-										this.pieces[capti].location = [-9999, 0];
-										this.pieces[capti].boardCell = -1;
-										this.pieces[capti].boardRow = -1;
-
-										aPieceWasCaptured = true;
-									}
-								}
-							}
-
-							this.pieces[i].boardCell = spaceIndex;
-							this.pieces[i].boardRow = rowIndex;
-							this.pieces[i].location = this.coordinates[rowIndex][0][spaceIndex];
-
-							if (!aPieceWasCaptured) {
-								this.pieces[i].moveMode = false;
-								this.moveMode = false;
-								for (var ai = 0; ai <= this.availableMoves.length; ai++) {
-									this.availableMoves.pop();
-								}
-
-								if (this.player === 1) {
-									this.player = 2;
-								} else {
-									this.player = 1;
-								}
-							} else {
-								this.pieces[i].moveMode = false;
-								this.moveMode = false;
-
-								for (var ai = 0; ai <= this.availableMoves.length; ai++) {
-									this.availableMoves.pop();
-								}
-
-								this.pieceClickHandler(this.pieces[i], i, true);
-							}
-							
-						}
-					}
-				}
-			}
+			};
 		}
 	},
 
 	created: function() {
-		this.createBoard();
-		this.createCoordinates();
-		this.createPieces();
+		this.createSpaces();
 	}
 }
